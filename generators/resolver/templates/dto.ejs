@@ -1,0 +1,13 @@
+import { InputType, Field } from '@nestjs/graphql';
+
+@InputType()
+export class Create<%=className%>Input {
+  @Field(() => String, { description: '角色名称' })
+  some: string;
+
+}
+@InputType()
+export class Update<%=className%>Input {
+  @Field(() => String, { description: '角色名称' })
+  some: string;
+}

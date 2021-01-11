@@ -18,12 +18,6 @@ module.exports = class extends Generator {
         name: "modelName",
         message: "Enter your model name",
         default: "model"
-      },
-      {
-        type: "confirm",
-        name: "base",
-        message: "Is this model extends BaseModel?",
-        default: true
       }
     ];
 
@@ -35,11 +29,13 @@ module.exports = class extends Generator {
   writing() {
     const className =
       this.props.modelName[0].toUpperCase() + this.props.modelName.substring(1);
+    this.log(className);
     this.fs.copyTpl(
-      this.templatePath("model.ejs"),
-      this.destinationPath(`./generated/${this.props.modelName}.ts`),
+      this.templatePath("service.ejs"),
+      this.destinationPath(`${this.props.modelName}.service.ts`),
       { className: className, ...this.props }
     );
+    this.log("完成");
   }
 
   end() {

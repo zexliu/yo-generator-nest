@@ -1,0 +1,57 @@
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  ID,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
+import { <%=className%>Service } from './<%=modelName%>.service';
+import { <%=className%>, <%=className%>Paginated } from './models/<%=modelName%>.model';
+import { Create<%=className%>Input ,Update<%=className%>Input} from './models/<%=modelName%>.dto';
+import { Id } from 'src/types';
+import { Inject } from '@nestjs/common';
+<% if (pagination) { %>
+  import { <%=className%>PaginationArgs } from './models/<%=modelName%>.dto';
+<% }%>
+
+
+@Resolver(() => <%=className%>)
+export class <%=className%>Resolver {
+  constructor(
+    @Inject() private readonly <%=modelName%>Service: <%=className%>Service,
+  ) {}
+
+  @Mutation(() => <%=className%>)
+  create<%=className%>(@Args('create<%=className%>Input') create<%=className%>Input: Create<%=className%>Input) {
+    return this.<%=modelName%>Service.save(create<%=className%>Input);
+  }
+  @Query(() => <%=className%>Paginated)
+  <%=modelName%>Pagination(@Args() args: <%=className%>PaginationArgs) {
+    return this.<%=modelName%>Service.findPage(args);
+  }
+  @Query(() => [<%=className%>], { name: '<%=pluralName%>' })
+  findAll() {
+    return this.<%=modelName%>Service.findList();
+  }
+
+  @Query(() => <%=className%>, { name: '<%=modelName%>' })
+  findOne(@Args('id', { type: () => ID }) id: Id) {
+    return this.<%=modelName%>Service.findById(id);
+  }
+
+  @Mutation(() => <%=className%>)
+  update<%=className%>(
+    @Args('id', { type: () => ID }) id: Id,
+    @Args('update<%=className%>Input') update<%=className%>Input: Update<%=className%>Input,
+  ) {
+    return this.<%=modelName%>Service.updateById(id, update<%=className%>Input);
+  }
+
+  @Mutation(() => <%=className%>)
+  remove<%=className%>(@Args('id', { type: () => ID }) id: Id) {
+    return this.<%=modelName%>Service.deleteById(id);
+  }
+
+}
