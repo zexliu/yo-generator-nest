@@ -1,0 +1,66 @@
+<% if (pagination) { %>
+import { PaginatedType } from 'src/commen/pagination/pagination-type';<% }
+_%>
+<% if (base) { %>
+import { ObjectType, Field } from '@nestjs/graphql'; 
+import { BaseModel } from 'src/commen/base/base.model';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+@Schema()
+@ObjectType()
+export class <%=className%> extends BaseModel {
+  @Field(() => String, { description: 'some description' })
+  @Prop({ required: false })
+  some: string;
+}
+<% } %>
+<% if (!base) { %>
+  import * as mongoose from 'mongoose';
+  import { ObjectType, Field, ID } from '@nestjs/graphql'; 
+  import { User } from 'src/core/users/entities/user.entity';
+  import { Ref, Id} from 'src/types';
+  import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+  
+  @Schema()
+  @ObjectType()
+  export class <%=className%> {
+  
+    @Field(() => ID, { description: '主键' })
+    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    _id: Id;
+  
+    @Field(() => Date)
+    @Prop({ type: Date, required: true })
+    createAt: Date;
+  
+    @Field(() => User, { nullable: true, description: '创建人' })
+    @Prop({
+      ype: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: 'User',
+    })
+    createBy?: Ref<User>;
+  
+    @Field(() => Date, { description: '更新时间', nullable: true })
+    @Prop({
+      required: false,
+      type: Date,
+      })
+  
+    updateAt?: Date;
+    @Field(() => User, { nullable: true, description: '修改人' })
+    @Prop({
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+        ef: 'User',
+    })
+  
+    updateBy?: Ref<User>;
+  
+    }
+  <% } %>
+<% if (pagination) { %>
+@ObjectType()
+export class <%=className%>Paginated extends PaginatedType(<%=className%>) {}
+<% } %>
+export const <%=className%>Schema = SchemaFactory.createForClass(<%=className%>);
